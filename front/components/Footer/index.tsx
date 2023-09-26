@@ -13,20 +13,26 @@ const Footer = () => {
             <div className="w-full px-4 md:w-1/2 lg:w-4/12 xl:w-5/12">
               <div className="mb-12 max-w-[360px] lg:mb-16">
                 <Link href="/" className="mb-8 inline-block">
-                  <Image
-                    src="images/logo/logo-2.svg"
-                    alt="logo"
-                    className="w-full dark:hidden"
-                    width={140}
-                    height={30}
-                  />
-                  <Image
-                    src="images/logo/logo.svg"
-                    alt="logo"
-                    className="hidden w-full dark:block"
-                    width={140}
-                    height={30}
-                  />
+                <div className="flex items-cente">
+                <Image
+                  src="/images/logo/logo-marker.png"
+                  alt="logo"
+                  width={140}
+                  height={30}
+                  className="w-10 dark:hidden dark:text-white"
+                />
+                <h1 className="dark:hidden text-black ml-2 text-2xl font-bold">RECYCLICK</h1>
+                </div>
+                <div className="flex items-center">
+                <Image
+                  src="/images/logo/logo-marker.png"
+                  alt="logo"
+                  width={140}
+                  height={30}
+                  className="hidden w-10 dark:block"
+                />
+                <h1 className="hidden dark:block text-white ml-2 text-2xl font-bold">RECYCLICK</h1>
+                </div>
                 </Link>
                 <p className="mb-9 text-base font-medium leading-relaxed text-body-color">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
