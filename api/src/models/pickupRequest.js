@@ -8,6 +8,9 @@ const modelSchema = new Schema({
     productName: {
         type: String,
     },
+    pickUpDate: {
+        type: String,
+    },
     orgPrice: {
         type: String,
     },

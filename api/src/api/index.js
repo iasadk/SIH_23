@@ -11,6 +11,8 @@ const adminLocationRoute = require("./modules/admin/location/route");
 const fileRoute = require('./modules/admin/file/route');
 const facilityRoute = require('./modules/admin/facilities/route');
 const pickUpRoute = require('./modules/admin/pick-up/route');
+const adminPickUpRoute = require('./modules/admin/admin-pick-up/route');
+const userCreditPoint = require('./modules/admin/creditPoints/route');
 
 const api = (app) => {
     app.use('*', (req, res, next) => {
@@ -58,9 +60,10 @@ const api = (app) => {
     app.use('/pick-up', pickUpRoute);
     app.use('/admin', adminAdminRoute);
     app.use('/admin/user', adminAdminRoute);
-    app.use('/admin/pick-up', pickUpRoute);
+    app.use('/admin/pick-up', adminPickUpRoute);
     app.use('/location', validateToken, adminLocationRoute);
-    app.use('/team-user', validateToken, adminTeamUserRoute);
+    // app.use('/team-user', validateToken, adminTeamUserRoute);
+    app.use('/credit-point', validateToken, userCreditPoint);
 
 };
 

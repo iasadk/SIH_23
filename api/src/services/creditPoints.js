@@ -1,48 +1,20 @@
 const { Types } = require('mongoose');
-const model = require('../models/pickupRequest');
+const model = require('../models/creditPoints');
 const { clearSearch } = require('../utilities/Helper');
 const { paginationAggregate } = require('../utilities/pagination');
 const Message = require('../utilities/Message');
-const io = require("socket.io-client");
-const creditPointModel = require('../models/creditPoints');
 
 class MasterService {
 
     static async save(data) {
-        const socket = io.connect("http://localhost:3100");
-
         const response = { status: false, resCode: Message.dataSaved.code, message: Message.dataSaved.message };
+
         try {
             const docData = data._id ? await model.findById(data._id) : new model();
-            if (data.status === "Credited" && docData.status !== "Credited") {
-                // then give the credit points to user:
-                const coinData = await creditPointModel.create({
-                    coins: docData.approxCredit,
-                    userId: docData.userId
-                })
-                console.log(coinData)
-                await coinData.save();
 
-
-                
-            }
             docData.userId = data.userId;
-            docData.productName = data.productName;
-            docData.purchaseDate = data.purchaseDate;
-            docData.orgPrice = data.orgPrice;
-            docData.approxCredit = data.approxCredit;
-            docData.condition = data.condition;
-            docData.pickUpDate = data.pickUpDate;
-            docData.status = data.status;
+            docData.coins = data.coins;
 
-            if (!data?._id) {
-                try {
-                    socket.emit("new-pickup", { msg: "New Pick up Request." });
-                } catch (error) {
-                    console.log(error)
-                }
-            }
-            
             await docData.save();
             response.status = true;
             response.message = Message.dataSaved.message;
@@ -58,21 +30,31 @@ class MasterService {
     static async list(query = {}) {
         const $extra = { page: query.page, limit: query.limit, isAll: query.isAll, total: query.total, getTotal: query.getTotal };
         let response = { data: [], extra: { ...$extra }, status: false };
-
         try {
             const search = {
-                _id: query._id ? Array.isArray(query._id) ? query._id?.map(v => Types.ObjectId(v)) : Types.ObjectId(query._id) : '',
-                name: query?.key ? { '$regex': new RegExp(query.key || ''), $options: 'i' } : '',
-                isDeleted: false
+                userId: query.userId ? query.userId : '',
             };
 
             clearSearch(search);
-
+            
             const $aggregate = [
                 { $match: search },
                 { $sort: { _id: -1 } },
+                {
+                    $group: {
+                        _id: null,
+                        totalCoins: { $sum: '$coins' }
+                    }
+                }
             ];
             response = await paginationAggregate(model, $aggregate, $extra);
+            // Rename the result field for consistency
+            if (response.data.length > 0) {
+                response.data[0].coins = response.data[0].totalCoins;
+                delete response.data[0].totalCoins;
+            } else {
+                response.data.push({ coins: 0 });
+            }
             response.status = true;
             return response;
         } catch (err) {

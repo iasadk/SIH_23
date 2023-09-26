@@ -2,11 +2,13 @@
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import GoldCoin from "@/components/svgs/goldCoin";
 import { toast } from "@/components/ui/use-toast";
+import creditPoints from "@/service/creditPoints";
 import user from "@/service/user";
 import { useEffect, useState } from "react";
 
 const AboutPage = () => {
   const [data, setData] = useState({});
+  const [credit, setCredit] = useState(0)
   const getProfile = async () => {
     try {
       const res: any = await user.profile();
@@ -17,6 +19,23 @@ const AboutPage = () => {
         });
         console.log(res.data?.result);
         setData({ ...res.data?.result });
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: `${error.message}`,
+      });
+    }
+  };
+  const calculateCreditPoints = async () => {
+    try {
+      const res: any = await creditPoints.calculateCredits();
+      if (res.success) {
+        toast({
+          className: "bg-green-600",
+          title: "Credit Data Loaded.",
+        });
+        setCredit(res.data[0]?.coins)
       }
     } catch (error) {
       toast({
@@ -43,8 +62,10 @@ const AboutPage = () => {
       });
     }
   };
+  
   useEffect(() => {
     getProfile();
+    calculateCreditPoints();
   }, []);
 
   return (
@@ -169,7 +190,7 @@ const AboutPage = () => {
               <div className="flex justify-center items-center flex-col m-[-150px]">
                 <GoldCoin {...{ width: "200px", height: "200px"}} />
                 <p className="text-center font-medium text-xl">Current Coin Balance</p>
-                <p className="items-center font-bold text-2xl">69</p>
+                <p className="items-center font-bold text-2xl">{credit.toString() || 0} </p>
               </div>
             </div>
           </div>

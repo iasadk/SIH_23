@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Table, Button, Form, Row, Col, Popconfirm, Modal, Spin, Typography, Select, Input, Tag } from 'antd';
+import { Table, Button, Form, Row, Col, Popconfirm, Modal, Spin, Typography, Select, Input, Tag, DatePicker } from 'antd';
 import { DeleteOutlined, EditOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import React, { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
 import service from '../../services/pickup';
@@ -7,6 +7,8 @@ import Pagination from '../components/Pagination';
 import { AntdMsg } from '../../utils/Antd';
 import moment from 'moment'
 import UserManagement from './userManagement';
+import dayjs from 'dayjs';
+
 export default function PickUp() {
 
     const [data, setData] = useState([]);
@@ -47,6 +49,19 @@ export default function PickUp() {
         {
             title: 'Product Condition',
             dataIndex: 'condition',
+        },
+        {
+            title: 'Estimated Credit',
+            dataIndex: 'approxCredit',
+        },
+        {
+            title: 'Original Price',
+            dataIndex: 'orgPrice',
+        },
+        {
+            title: 'Pick Up Date',
+            dataIndex: 'pickUpDate',
+            render: (v) => (<p>{v || "Not Confirmed"}</p>)
         },
         {
             title: 'Status',
@@ -189,6 +204,7 @@ const AddForm = forwardRef((props, ref) => {
     const [open, setOpen] = useState(false);
     const [data, setData] = useState({ aspect: 1 });
     const [ajxRequesting, setAjxRequesting] = useState(false);
+    const dateFormat = 'YYYY/MM/DD';
 
 
     const handleChange = (value) => {
@@ -257,6 +273,17 @@ const AddForm = forwardRef((props, ref) => {
         console.log('data', data);
     }, [data]);
 
+    const onChange = (date, dateString) => {
+        console.log(date, dateString);
+    };
+    function disabledDate(current) {
+        // Get the current date
+        const currentDate = new Date();
+
+        // Disable dates that are before the current date
+        return current && current < currentDate.setHours(0, 0, 0, 0);
+    }
+
     return (
         <>
             <Modal
@@ -291,6 +318,11 @@ const AddForm = forwardRef((props, ref) => {
                                     </Select>
                                 </Form.Item>
                             </Col>
+                            {data.status === "Pick Up Confirmed" && <Col span={24}>
+                                <Form.Item label="Pick Up Date" required>
+                                    <DatePicker onChange={(date, dateString) => { handleChange({ pickUpDate: dateString }) }} disabledDate={disabledDate} value={data.pickUpDate ? dayjs(data.pickUpDate, dateFormat) : ""} format={dateFormat} />
+                                </Form.Item>
+                            </Col>}
                         </Row>
                     </Form>
                 </Spin>

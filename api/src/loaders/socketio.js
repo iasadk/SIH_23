@@ -2,7 +2,6 @@ const EventEmitter = require('events').EventEmitter
 const emitter = new EventEmitter();
 const { validateTokenSocketio } = require('../api/middlewares/auth');
 module.exports = ({ server }) => {
-    console.log("Socket:--------------",server)
     const io = require('socket.io')(server, {
         cors: {
             origin: "*",
