@@ -7,10 +7,54 @@ import ReactMapGL, {
 } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import * as turf from "@turf/turf";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useToast } from "../ui/use-toast";
 import { facilities } from "./SampleData";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
+import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
+import { productsData } from "./SampleProducts";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import GoldCoin from "../svgs/goldCoin";
 export default function MyMap() {
   const { toast } = useToast();
   const [initialValue, setInitialValue] = React.useState({
@@ -19,7 +63,6 @@ export default function MyMap() {
   const [error, setError] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [name, setName] = React.useState("");
-  const [selectedMarker, setSelectedMarker] = React.useState(null);
   const [eWasteFacilities, setEWasteFacilities] = React.useState(facilities); // Store e-waste facility data
   const [nearbyFacilities, setNearbyFacilities] = React.useState([
     {
@@ -52,8 +95,23 @@ export default function MyMap() {
     },
     // Add more e-waste facilities here
   ]);
-
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("");
   const [maxDistance, setMaxDistance] = React.useState(20000);
+  const [ModalData, setModalData] = React.useState({});
+  const [modalProcessingData, setModalProcessingData] = React.useState({
+    productName: "",
+    purchaseDate: null,
+    condition: "",
+  });
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [date, setDate] = React.useState<Date>();
+  const [facilityModalMsg, setFacilityModalMsg] = React.useState({
+    msg: "Calculate Total Credit's",
+  });
+  const [approxCredit, setApproxCredit] = React.useState(null);
+  const [modalSaveButtonDisable, setModalSaveButtonDisable] =
+    React.useState(false);
   // Your code to fetch e-waste facility data or import it
   function searchPlace() {
     setIsLoading(true);
@@ -210,10 +268,137 @@ export default function MyMap() {
             {(calculateDistance(userCoords, facilityCoords) / 1000).toFixed(2)}{" "}
             Km
           </p>
+          <Button
+            variant="link"
+            className="font-semibold mt-1 px-0"
+            onClick={() => {
+              setIsModalOpen(true);
+              setModalData(facility);
+            }}
+          >
+            Dump waste to this center -&gt;
+          </Button>
         </div>
       ),
     });
   };
+
+  const products = productsData.map((v) => ({
+    value: v.name,
+    label: v.name,
+  }));
+
+  function simulateAPIRequest() {
+    setModalSaveButtonDisable(true);
+    setFacilityModalMsg({ msg: "Sending Data..." });
+
+    setTimeout(function () {
+      setFacilityModalMsg({
+        msg: "Data processing...",
+      });
+
+      setTimeout(function () {
+        setFacilityModalMsg({
+          msg: "Data analysing...",
+        });
+
+        setTimeout(function () {
+          setFacilityModalMsg({ msg: "Almost complete..." });
+          setTimeout(() => {
+            calculateCredit();
+            setModalSaveButtonDisable(false);
+            setFacilityModalMsg({ msg: "Calculate Total Credit's" });
+          }, 3000);
+        }, 2000); // Simulate a 2-second delay for data analysis
+      }, 3000); // Simulate a 3-second delay for data processing
+    }, 2000); // Simulate a 2-second delay for the initial request
+
+    // You can add more stages or modify the delays as needed
+  }
+
+  function calculateCredit() {
+    if (
+      !modalProcessingData.condition &&
+      !modalProcessingData.productName &&
+      !modalProcessingData.purchaseDate
+    ) {
+      toast({
+        variant: "destructive",
+        title: "Please Select All Fields",
+      });
+      return;
+    }
+    // Define credit values based on conditions
+    const conditionCredits = {
+      Working: 100,
+      "Not Working": 50,
+      Broken: 10,
+      Burned: 5,
+      Wet: 0,
+    };
+
+    try {
+      // Calculate credit based on purchase date
+      const year = modalProcessingData.purchaseDate?.getFullYear();
+      const month = String(
+        modalProcessingData.purchaseDate?.getMonth() + 1
+      ).padStart(2, "0"); // Month is zero-based, so we add 1
+      const day = String(modalProcessingData.purchaseDate?.getDate()).padStart(
+        2,
+        "0"
+      );
+      const formattedDate = `${year}-${month}-${day}`;
+      const currentDate = new Date();
+      const purchaseDateTime = new Date(formattedDate);
+
+      // Calculate the difference in months
+      const monthDiff =
+        (currentDate.getFullYear() - purchaseDateTime.getFullYear()) * 12 +
+        (currentDate.getMonth() - purchaseDateTime.getMonth());
+
+      let credit = 0;
+      const prodData = productsData.filter(
+        (v) => v.name.toLowerCase() === modalProcessingData.productName
+      )?.[0];
+      console.log(monthDiff);
+      if (monthDiff <= 6) {
+        // If the product was purchased within the last 6 months, full credit is given
+        credit = Number(prodData.price);
+      } else if (monthDiff <= 12) {
+        // If the product was purchased between 6 and 12 months ago, credit is reduced by 20%
+        credit = Number(prodData.price) * 0.8;
+      } else if (monthDiff <= 24) {
+        // If the product was purchased between 12 and 24 months ago, credit is reduced by 40%
+        credit = Number(prodData.price) * 0.6;
+      } else {
+        // If the product is older than 24 months, no credit is given
+        credit = Number(prodData.price) * 0.2;
+      }
+
+      // Apply the condition-based credit adjustment
+      if (conditionCredits.hasOwnProperty(modalProcessingData.condition)) {
+        credit *= conditionCredits[modalProcessingData.condition] / 100;
+      } else {
+        // Default to a 50% credit reduction for unknown conditions
+        credit *= 0.5;
+      }
+      setApproxCredit(credit.toFixed(2));
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: `${error.message}`,
+      });
+    }
+  }
+
+  React.useEffect(() => {
+    setModalProcessingData({
+      productName: "",
+      purchaseDate: null,
+      condition: "",
+    });
+    setApproxCredit(null);
+  }, [isModalOpen]);
   return (
     <>
       <div className="my-2 flex justify-between">
@@ -398,22 +583,225 @@ export default function MyMap() {
           Initializing Map....
         </p>
       )}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        {/* <DialogTrigger>Open</DialogTrigger> */}
+        <DialogContent className="sm:max-w-[495px]">
+          <DialogHeader>
+            <DialogTitle>Edit profile</DialogTitle>
+            <DialogDescription>
+              Make changes to your profile here. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="username" className="text-right">
+                Facility
+              </Label>
+              <Input
+                id="username"
+                value={ModalData.Name}
+                disabled={true}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="username" className="text-right">
+                E-waste
+              </Label>
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-[330px] justify-between"
+                  >
+                    {modalProcessingData.productName
+                      ? products.find(
+                          (v) =>
+                            v.value.toLowerCase() ===
+                            modalProcessingData.productName
+                        )?.label
+                      : "Select a Product..."}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[330px] p-0">
+                  <Command>
+                    <CommandInput
+                      placeholder="Search framework..."
+                      className="h-9"
+                    />
+                    <CommandEmpty>No Product found.</CommandEmpty>
+                    <CommandGroup className="border-2 border-green-2 h-[300px] overflow-y-auto">
+                      {products.map((framework) => (
+                        <CommandItem
+                          key={framework.value}
+                          onSelect={(currentValue) => {
+                            setModalProcessingData({
+                              ...modalProcessingData,
+                              productName:
+                                currentValue ===
+                                modalProcessingData.productName.toLowerCase()
+                                  ? ""
+                                  : currentValue,
+                            });
+                            setOpen(false);
+                          }}
+                        >
+                          {framework.label}
+                          <svg
+                            fill="#000000"
+                            width="20px"
+                            height="20px"
+                            viewBox="0 0 24 24"
+                            id="check"
+                            data-name="Line Color"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className={cn(
+                              "ml-auto h-4 w-4 icon line-color dark:!fill-white",
+                              modalProcessingData.productName ===
+                                framework.value.toLowerCase()
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          >
+                            <polyline
+                              id="primary"
+                              points="5 12 10 17 19 8"
+                              style={{
+                                fill: "none",
+                                stroke: "rgb(255, 255, 255)",
+                                strokeLinecap: "round",
+                                strokeLinejoin: "round",
+                                strokeWidth: 2,
+                              }}
+                            />
+                          </svg>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="username" className="text-right">
+                Purchased Date
+              </Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-[330px] justify-start text-left font-normal",
+                      !modalProcessingData.purchaseDate &&
+                        "text-muted-foreground"
+                    )}
+                  >
+                    {modalProcessingData.purchaseDate ? (
+                      format(modalProcessingData.purchaseDate, "PPP")
+                    ) : (
+                      <span>Pick a date</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={modalProcessingData.purchaseDate}
+                    onSelect={(v) => {
+                      setModalProcessingData({
+                        ...modalProcessingData,
+                        purchaseDate: v,
+                      });
+                    }}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="username" className="text-right">
+                Condition
+              </Label>
+              <Select
+                onValueChange={(e) => {
+                  setModalProcessingData({
+                    ...modalProcessingData,
+                    condition: e,
+                  });
+                }}
+              >
+                <SelectTrigger className="w-[330px]">
+                  <SelectValue placeholder="Select a condition" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Condition</SelectLabel>
+                    <SelectItem value="Working">Working</SelectItem>
+                    <SelectItem value="Not Working">Not Working</SelectItem>
+                    <SelectItem value="Broken">Broken</SelectItem>
+                    <SelectItem value="Burned">Burned</SelectItem>
+                    <SelectItem value="Wet">Wet</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            {approxCredit && !modalSaveButtonDisable && (
+              <div className="grid grid-cols-4 items-center gap-4">
+                <p className="flex justify-end">
+                  <GoldCoin />
+                </p>
+                <p className="font-medium w-[320px]">
+                  Approx Total Credit: {approxCredit}
+                </p>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            {/* <DialogClose asChild> */}
+            <Button
+              disabled={modalSaveButtonDisable}
+              onClick={() => {
+                // setIsModalOpen(false);
+                simulateAPIRequest();
+              }}
+              className="text-white"
+            >
+              {facilityModalMsg.msg}
+            </Button>
+            {approxCredit && !modalSaveButtonDisable && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        toast({
+                          className: "bg-green-600",
+                          title: "Notification Send to Center",
+                          description: "A message will get you once the time slot for pickup is confirmed.",
+                        });
+                        setIsModalOpen(false);
+                      }}
+                      className="text-white"
+                    >
+                      Notify Them
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="w-[120px] text-white">
+                      By Clicking on it you will get an appointment for the
+                      collection of E-waste from you.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+            {/* </DialogClose> */}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
-}
-
-{
-  /* Trash Can */
-}
-{
-  /* <svg
-                width="20px"
-                height="20px"
-                viewBox="-3 -2 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                preserveAspectRatio="xMinYMin"
-                className="jam jam-trash fill-red-500"
-              >
-                <path d="M6 2V1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1h4a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-.133l-.68 10.2a3 3 0 0 1-2.993 2.8H5.826a3 3 0 0 1-2.993-2.796L2.137 7H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h4zm10 2H2v1h14V4zM4.141 7l.687 10.068a1 1 0 0 0 .998.932h6.368a1 1 0 0 0 .998-.934L13.862 7h-9.72zM7 8a1 1 0 0 1 1 1v7a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1zm4 0a1 1 0 0 1 1 1v7a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1z" />
-              </svg> */
 }
