@@ -23,6 +23,7 @@ module.exports = {
 							throw new Error();
 						}
 						req.__cuser = cuser;
+						console.log("user: ",cuser)
 					} catch (e) {
 						Logger.error('User does not exist');
 						throw new Error();

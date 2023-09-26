@@ -56,6 +56,8 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import GoldCoin from "../svgs/goldCoin";
 import pickupService from "@/service/pickup";
+import util from "@/lib/helper";
+
 export default function MyMap() {
   const { toast } = useToast();
   const [initialValue, setInitialValue] = React.useState({
@@ -274,6 +276,11 @@ export default function MyMap() {
             variant="link"
             className="font-semibold mt-1 px-0"
             onClick={() => {
+              // protecting page:
+              if (!util.isLoggedIn()) {
+                window.location.href = "/signin";
+                return;
+              }
               setIsModalOpen(true);
               setModalData(facility);
             }}
@@ -291,30 +298,29 @@ export default function MyMap() {
   }));
 
   function simulateAPIRequest() {
-    // setModalSaveButtonDisable(true);
-    // setFacilityModalMsg({ msg: "Sending Data..." });
-    calculateCredit();
+    setModalSaveButtonDisable(true);
+    setFacilityModalMsg({ msg: "Sending Data..." });
 
-    // setTimeout(function () {
-    //   setFacilityModalMsg({
-    //     msg: "Data processing...",
-    //   });
+    setTimeout(function () {
+      setFacilityModalMsg({
+        msg: "Data processing...",
+      });
 
-    //   setTimeout(function () {
-    //     setFacilityModalMsg({
-    //       msg: "Data analysing...",
-    //     });
+      setTimeout(function () {
+        setFacilityModalMsg({
+          msg: "Data analysing...",
+        });
 
-    //     setTimeout(function () {
-    //       setFacilityModalMsg({ msg: "Almost complete..." });
-    //       setTimeout(() => {
-    //         calculateCredit();
-    //         setModalSaveButtonDisable(false);
-    //         setFacilityModalMsg({ msg: "Calculate Total Credit's" });
-    //       }, 3000);
-    //     }, 2000); // Simulate a 2-second delay for data analysis
-    //   }, 3000); // Simulate a 3-second delay for data processing
-    // }, 2000); // Simulate a 2-second delay for the initial request
+        setTimeout(function () {
+          setFacilityModalMsg({ msg: "Almost complete..." });
+          setTimeout(() => {
+            calculateCredit();
+            setModalSaveButtonDisable(false);
+            setFacilityModalMsg({ msg: "Calculate Total Credit's" });
+          }, 3000);
+        }, 2000); // Simulate a 2-second delay for data analysis
+      }, 3000); // Simulate a 3-second delay for data processing
+    }, 2000); // Simulate a 2-second delay for the initial request
 
     // You can add more stages or modify the delays as needed
   }

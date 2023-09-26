@@ -2,9 +2,9 @@
 import Link from "next/link";
 import util from "@/lib/helper";
 import user from "@/service/user";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
 
 const SigninPage = () => {
   const { toast } = useToast();
@@ -29,6 +29,13 @@ const SigninPage = () => {
       });
     }
   };
+ 
+   // protecting page:
+   if (util.isLoggedIn()) {
+    window.location.href = "/";
+    return;
+  }
+
   return (
     <>
       <section className="relative z-10 overflow-hidden pt-36 pb-16 md:pb-20 lg:pt-[180px] lg:pb-28">

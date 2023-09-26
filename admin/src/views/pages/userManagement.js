@@ -8,19 +8,19 @@ import Pagination from '../components/Pagination';
 import { AntdMsg } from '../../utils/Antd';
 
 
-export default function UserManagement() {
+export default function UserManagement({ userId }) {
 
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState([]);
-    const [qData, setQData] = useState({ page: 1, limit: 20 });
+    const [qData, setQData] = useState({ page: 1, limit: 20, _id: userId });
     const addNewModalRef = useRef();
     const ModelModalRef = useRef();
     const columns = [
         {
             title: 'Username',
             dataIndex: 'username',
-            width:100
+            width: 100
         },
         {
             title: 'Phone',

@@ -36,7 +36,7 @@ class MasterService {
             };
 
             clearSearch(search);
-            
+            console.log("search: ",search)
             const $aggregate = [
                 { $match: search },
                 { $sort: { _id: -1 } },

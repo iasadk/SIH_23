@@ -356,7 +356,7 @@ const UserDetailModal = forwardRef((props, ref) => {
                 width={1200}
                 className="app-modal-body"
             >
-                <UserManagement />
+                <UserManagement userId={data.userId}/>
             </Modal>
         </>
     );

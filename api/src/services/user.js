@@ -143,25 +143,11 @@ class MasterService {
         try {
             const search = {
                 _id: query._id ? Array.isArray(query._id) ? query._id?.map(v => Types.ObjectId(v)) : Types.ObjectId(query._id) : '',
-                $or: [
-                    {
-                        firstName: { '$regex': new RegExp(query.key || ''), $options: 'i' }
-                    },
-                    {
-                        lastName: { '$regex': new RegExp(query.key || ''), $options: 'i' }
-                    },
-                    {
-                        email: { '$regex': new RegExp(query.key || ''), $options: 'i' }
-                    },
-                    {
-                        phone: { '$regex': new RegExp(query.key || ''), $options: 'i' }
-                    },
-                ],
                 isDeleted: false
             };
 
             clearSearch(search);
-
+            console.log(search)
             const $aggregate = [
                 { $match: search },
                 { $sort: { _id: -1 } },
