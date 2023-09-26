@@ -62,20 +62,26 @@ const Header = () => {
                   sticky ? "py-5 lg:py-2" : "py-8"
                 } `}
               >
+                <div className="flex items-cente">
                 <Image
-                  src="/images/logo/logo-2.svg"
+                  src="/images/logo/logo-marker.png"
                   alt="logo"
                   width={140}
                   height={30}
-                  className="w-full dark:hidden"
+                  className="w-10 dark:hidden dark:text-white"
                 />
+                <h1 className="dark:hidden text-black ml-2 text-2xl font-bold">RECYCLICK</h1>
+                </div>
+                <div className="flex items-center">
                 <Image
-                  src="/images/logo/logo.svg"
+                  src="/images/logo/logo-marker.png"
                   alt="logo"
                   width={140}
                   height={30}
-                  className="hidden w-full dark:block"
+                  className="hidden w-10 dark:block"
                 />
+                <h1 className="hidden dark:block text-white ml-2 text-2xl font-bold">RECYCLICK</h1>
+                </div>
               </Link>
             </div>
             <div className="flex w-full items-center justify-between px-4">
