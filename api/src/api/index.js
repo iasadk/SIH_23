@@ -5,9 +5,12 @@ const { validateToken: validateTokenFront, setCuserInfo: setCuserInfoFront } = r
 
 
 const adminRoute = require("./modules/admin/user/route");
+const adminUserRoute = require("./modules/admin/admin-user/route");
+const adminAdminRoute = require("./modules/admin/admin/route");
 const adminLocationRoute = require("./modules/admin/location/route");
 const fileRoute = require('./modules/admin/file/route');
 const facilityRoute = require('./modules/admin/facilities/route');
+const pickUpRoute = require('./modules/admin/pick-up/route');
 
 const api = (app) => {
     app.use('*', (req, res, next) => {
@@ -51,6 +54,11 @@ const api = (app) => {
    app.use('/ewaste', facilityRoute);
     app.use('/file', /* validateToken, */ fileRoute);
     app.use('/user', adminRoute);
+    app.use('/admin/user', adminUserRoute);
+    app.use('/pick-up', pickUpRoute);
+    app.use('/admin', adminAdminRoute);
+    app.use('/admin/user', adminAdminRoute);
+    app.use('/admin/pick-up', pickUpRoute);
     app.use('/location', validateToken, adminLocationRoute);
     app.use('/team-user', validateToken, adminTeamUserRoute);
 

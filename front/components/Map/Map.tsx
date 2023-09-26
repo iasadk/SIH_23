@@ -55,6 +55,7 @@ import { productsData } from "./SampleProducts";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import GoldCoin from "../svgs/goldCoin";
+import pickupService from "@/service/pickup";
 export default function MyMap() {
   const { toast } = useToast();
   const [initialValue, setInitialValue] = React.useState({
@@ -110,6 +111,7 @@ export default function MyMap() {
     msg: "Calculate Total Credit's",
   });
   const [approxCredit, setApproxCredit] = React.useState(null);
+  const [orgPrice, setOrgPrice] = React.useState(null);
   const [modalSaveButtonDisable, setModalSaveButtonDisable] =
     React.useState(false);
   // Your code to fetch e-waste facility data or import it
@@ -289,29 +291,30 @@ export default function MyMap() {
   }));
 
   function simulateAPIRequest() {
-    setModalSaveButtonDisable(true);
-    setFacilityModalMsg({ msg: "Sending Data..." });
+    // setModalSaveButtonDisable(true);
+    // setFacilityModalMsg({ msg: "Sending Data..." });
+    calculateCredit();
 
-    setTimeout(function () {
-      setFacilityModalMsg({
-        msg: "Data processing...",
-      });
+    // setTimeout(function () {
+    //   setFacilityModalMsg({
+    //     msg: "Data processing...",
+    //   });
 
-      setTimeout(function () {
-        setFacilityModalMsg({
-          msg: "Data analysing...",
-        });
+    //   setTimeout(function () {
+    //     setFacilityModalMsg({
+    //       msg: "Data analysing...",
+    //     });
 
-        setTimeout(function () {
-          setFacilityModalMsg({ msg: "Almost complete..." });
-          setTimeout(() => {
-            calculateCredit();
-            setModalSaveButtonDisable(false);
-            setFacilityModalMsg({ msg: "Calculate Total Credit's" });
-          }, 3000);
-        }, 2000); // Simulate a 2-second delay for data analysis
-      }, 3000); // Simulate a 3-second delay for data processing
-    }, 2000); // Simulate a 2-second delay for the initial request
+    //     setTimeout(function () {
+    //       setFacilityModalMsg({ msg: "Almost complete..." });
+    //       setTimeout(() => {
+    //         calculateCredit();
+    //         setModalSaveButtonDisable(false);
+    //         setFacilityModalMsg({ msg: "Calculate Total Credit's" });
+    //       }, 3000);
+    //     }, 2000); // Simulate a 2-second delay for data analysis
+    //   }, 3000); // Simulate a 3-second delay for data processing
+    // }, 2000); // Simulate a 2-second delay for the initial request
 
     // You can add more stages or modify the delays as needed
   }
@@ -360,7 +363,7 @@ export default function MyMap() {
       const prodData = productsData.filter(
         (v) => v.name.toLowerCase() === modalProcessingData.productName
       )?.[0];
-      console.log(monthDiff);
+      setOrgPrice(prodData.price);
       if (monthDiff <= 6) {
         // If the product was purchased within the last 6 months, full credit is given
         credit = Number(prodData.price);
@@ -398,7 +401,34 @@ export default function MyMap() {
       condition: "",
     });
     setApproxCredit(null);
+    setOrgPrice(null);
   }, [isModalOpen]);
+
+  const handlePickUpNotification = async () => {
+    try {
+      const res: any = await pickupService.save({
+        ...modalProcessingData,
+        orgPrice,
+        approxCredit,
+        status: "Initiated",
+      });
+      if (res.success) {
+        toast({
+          className: "bg-green-600",
+          title: "Notification Send to Center",
+          description:
+            "A message will get you once the time slot for pickup is confirmed.",
+        });
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        variant: "destructive",
+        title: `${error.message}`,
+      });
+    }
+  };
   return (
     <>
       <div className="my-2 flex justify-between">
@@ -777,12 +807,7 @@ export default function MyMap() {
                     <Button
                       variant="outline"
                       onClick={() => {
-                        toast({
-                          className: "bg-green-600",
-                          title: "Notification Send to Center",
-                          description: "A message will get you once the time slot for pickup is confirmed.",
-                        });
-                        setIsModalOpen(false);
+                        handlePickUpNotification();
                       }}
                       className="text-white"
                     >

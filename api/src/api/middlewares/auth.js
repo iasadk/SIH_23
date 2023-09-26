@@ -16,7 +16,7 @@ module.exports = {
 					const bearer = req.headers.authorization.split(" ");
 					const token = bearer[1];
 					const decode = jwt.verify(token, config.jwt.secretKey);
-
+					console.log(decode)
 					try {
 						const cuser = await masterAdminModule.findById(decode.sub);
 						if (!cuser) {

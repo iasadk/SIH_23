@@ -26,7 +26,6 @@ process.on('uncaughtException', function (error) {
 				process.exit(1);
 				return;
 			}
-			console.log("Listing on PORT: ",config.port)
 			Logger.log(
 				'info',
 				`

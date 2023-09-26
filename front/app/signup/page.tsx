@@ -14,9 +14,9 @@ const SignupPage = () => {
       if (res.success) {
         toast({
           className: "bg-green-600",
-          title: "Login Successfully.",
+          title: "Registered Successfully.",
         });
-        router.push("/login");
+        router.push("/signin");
       }
     } catch (error) {
       console.log(error);

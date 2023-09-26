@@ -45,4 +45,4 @@ modelSchema.pre('save', function (next) {
     });
 });
 
-module.exports = model('admin', modelSchema);
+module.exports = model('user', modelSchema);

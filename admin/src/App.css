@@ -1,0 +1,201 @@
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(133, 112, 112);
+}
+
+.overflow-y-auto {
+  overflow-y: auto !important;
+}
+
+.overflow-x-auto {
+  overflow-x: auto !important;
+}
+
+/* .nav-overflow>ul{
+  overflow: auto;
+  overflow-x: hidden;
+  height: calc(100vh - 46px);
+} */
+.main-content {
+  /* background-color: #f5f5f5!important; */
+  width: 100% !important;
+  height: calc(100vh - 20px) !important;
+  overflow: auto;
+  /* border: 1px solid rgb(211, 96, 96); */
+  margin: 10px;
+  padding: 10px;
+}
+
+.ant-page-header.ant-page-header-ghost {
+  padding: 0px;
+}
+
+.req::after {
+  content: ' *';
+  color: red;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.app-modal-body-overflow .ant-modal-body,
+.app-modal-without-footer-body-overflow .ant-modal-body {
+  max-height: calc(100vh - 200px) !important;
+  display: flex;
+  flex-direction: column;
+  overflow: auto !important;
+}
+
+.app-modal-without-footer-body-overflow .ant-modal-body {
+  max-height: calc(100vh - 100px) !important;
+}
+
+.ant-modal-fullscreen {
+  width: 100vw !important;
+  height: 100vh;
+  top: 0px !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+.ant-modal-fullscreen .ant-modal-body {
+  height: calc(100vh - 110px) !important;
+  display: flex;
+  flex-direction: column;
+  overflow: auto !important;
+}
+
+.ant-modal-fullscreen .ant-modal-content {
+  height: 100vh;
+  width: 100vw;
+}
+
+.ant-tabs-nav {
+  margin-bottom: 0px !important;
+}
+
+/* .ant-tabs-content-holder{
+  padding: 10px;
+  overflow: auto;
+  height: calc(100vh - 204px)
+} */
+.ant-tabs-tab {
+  border-top: 2px solid transparent !important;
+}
+
+.ant-tabs-tab.ant-tabs-tab-active {
+  border-top: 2px solid red !important;
+}
+
+.ant-message .anticon {
+  top: -3px !important;
+}
+
+.ant-pagination {
+  display: inline-flex;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.ant-page-header {
+  padding: 0px;
+}
+
+.main-content .ant-card-small>.ant-card-body:first-child {
+  padding-top: 0px;
+}
+
+.ant-col .ant-form-item {
+  margin-bottom: 10px;
+}
+
+.ant-col.ant-form-item-label {
+  padding: 0px !important;
+}
+
+/* Loader Page CSS Starts */
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loader Page CSS Ends */
+.tox-notification.tox-notification--in.tox-notification--warning,
+.tox-statusbar__branding {
+  display: none !important;
+}
+
+.search-form .ant-row div.ant-col:last-child {
+  margin-left: auto;
+}
+
+.cp {
+  cursor: pointer;
+}
+
+.ant-message .anticon {
+  position: static !important;
+}
+
+ul.ant-menu-horizontal li:first-child {
+  margin-left: auto;
+}
+
+.role-module-checkbox {
+  display: flex !important;
+  flex-wrap: wrap;
+}
+
+.role-module-checkbox label {
+  width: 25%;
+  margin-right: 0px;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+.w-25 {
+  width: 25% !important;
+}
+
+.w-50 {
+  width: 50% !important;
+}
+
+.w-75 {
+  width: 75% !important;
+}
+
+.ant-menu-submenu-selected .ant-menu-title-content a {
+  color: white; /* Set the text color to white */
+}

@@ -7,10 +7,18 @@ const { formValidation } = require('../others');
 const user = require('../../../models/user');
 
 const validations = {
-    login: [
+    loginUser: [
         check('email')
-            .notEmpty().withMessage('Email name is required')
-            .isEmail().withMessage("Please enter valid email"),
+            .notEmpty().withMessage('Email is required'),
+
+        check('password')
+            .notEmpty().withMessage("Password is required"),
+
+        formValidation
+    ],
+    login: [
+        check('code')
+            .notEmpty().withMessage('Code is required'),
 
         check('password')
             .notEmpty().withMessage("Password is required"),
@@ -166,7 +174,7 @@ const validations = {
         check('password')
             .custom(async (value, { req }) => {
                 const body = req.body;
-                if ((!body._id)) {
+                if ((!body._id && !value)) {
                     throw new Error("Password is required");
                 }
             }),

@@ -143,9 +143,6 @@ class MasterService {
         try {
             const search = {
                 _id: query._id ? Array.isArray(query._id) ? query._id?.map(v => Types.ObjectId(v)) : Types.ObjectId(query._id) : '',
-                roleId: query.roleId ? Types.ObjectId(query.roleId) : undefined,
-                stateId: query.stateId ? Types.ObjectId(query.stateId) : undefined,
-                cityId: query.cityId ? Types.ObjectId(query.cityId) : undefined,
                 $or: [
                     {
                         firstName: { '$regex': new RegExp(query.key || ''), $options: 'i' }
@@ -160,7 +157,6 @@ class MasterService {
                         phone: { '$regex': new RegExp(query.key || ''), $options: 'i' }
                     },
                 ],
-                type: 'subAdmin',
                 isDeleted: false
             };
 
@@ -169,19 +165,6 @@ class MasterService {
             const $aggregate = [
                 { $match: search },
                 { $sort: { _id: -1 } },
-                {
-                    $project: {
-                        cityId: 1,
-                        stateId: 1,
-                        roleId: 1,
-                        firstName: 1,
-                        lastName: 1,
-                        phone: 1,
-                        email: 1,
-                        status: 1,
-                        adminRights: 1
-                    }
-                },
             ];
             response = await paginationAggregate(adminModel, $aggregate, $extra);
             response.status = true;

@@ -51,11 +51,10 @@ class locationService {
         const _id = data._id;
         const response = { data: {}, status: false };
       
-        console.log(data.data.length)
         response.data = data
         response.status = true;
 
-        return response
+        return response;
 
     }
     static async delete(ids) {

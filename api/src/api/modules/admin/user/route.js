@@ -6,7 +6,7 @@ const masterAdmin = require('../../../../models/user');
 
 const router = Router({ mergeParams: true });
 
-router.post('/login', validation.login, controller.login);
+router.post('/login', validation.loginUser, controller.login);
 router.post('/validate-token', validateToken, controller.validateToken);
 router.post('/update-password', validateToken, validation.updatePassword, controller.updatePassword);
 router.get('/profile', validateToken, controller.profile);
