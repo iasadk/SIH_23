@@ -21,7 +21,7 @@ export default function RootLayout({
 
       <body className="dark:bg-[#090E34]">
         <Providers>
-      <Toaster />
+          <Toaster />
           <Header />
           {children}
 
@@ -33,5 +33,5 @@ export default function RootLayout({
   );
 }
 
-import { Providers } from "./providers";import { Toaster } from "@/components/ui/toaster";
-
+import { Providers } from "./providers";
+import { Toaster } from "@/components/ui/toaster";
