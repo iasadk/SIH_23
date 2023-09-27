@@ -13,4 +13,12 @@ export default class user {
         return axios.get(this.baseURL + '/profile');
         
     }
+    static trackWasteOrder(){
+        return axios.get(this.baseURL + '/track-order');
+        
+    }
+    static trackWasteHistory(){
+        return axios.get(this.baseURL + '/get-waste-history');
+        
+    }
 }

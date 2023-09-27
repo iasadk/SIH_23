@@ -10,6 +10,8 @@ router.post('/login', validation.loginUser, controller.login);
 router.post('/validate-token', validateToken, controller.validateToken);
 router.post('/update-password', validateToken, validation.updatePassword, controller.updatePassword);
 router.get('/profile', validateToken, controller.profile);
+router.get('/track-order', validateToken, controller.trackWasteOrder);
+router.get('/get-waste-history', validateToken, controller.trackWasteHistory);
 router.post('/register',validation.userValidation, controller.saveProfile);
 router.post('/change-avatar', validateToken, controller.changeAvatar);
 

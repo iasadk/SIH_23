@@ -6,8 +6,8 @@ const Blog = () => {
   return (
     <>
       <Breadcrumb
-        pageName="Blog Grid"
-        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. In varius eros eget sapien consectetur ultrices. Ut quis dapibus libero."
+        pageName="Tech Sustainability Stories"
+        description="Unveiling the eco-revolution one innovation at a time, where technology and sustainability unite for a greener tomorrow."
       />
 
       <section className="pt-[120px] pb-[120px]">

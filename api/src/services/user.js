@@ -85,6 +85,85 @@ class MasterService {
             throw Response.createError(Message.dataFetchingError, e);
         }
     }
+    static async trackWasteOrder(cuser) {
+        const response = {
+            resCode: Message.noContent.code,
+            message: Message.noContent.message,
+            data: {
+            },
+        };
+
+        const sample = [
+            { facilityName: "M/s. HMG Eco care Recycling", credit: "5",progressPercentage: 25,productName:"Belkin AC Anywhere - F5C400300W" },
+            { facilityName: "M/s. Earth Care E-waste Private Limited", credit: "20.6",progressPercentage: 60,productName:"Sanus 15' - 40' Flat Panel TV Black Wall Mount - VM400B" },
+            { facilityName: "M/s. E-Plant Recycling", credit: "3.5",progressPercentage: 50,productName:"Bose Acoustimass 5 Series III Speaker System - AM53BK" }
+        ]
+        const randIdx = Math.floor(Math.random() * sample.length);
+        try {
+            const data = { progressPercentage: sample[randIdx].progressPercentage, facilityName: sample[randIdx].facilityName, productName: sample[randIdx].productName, productPurchaseDate: "11 September, 2023", credit: sample[randIdx].credit }
+
+            response.data = data;
+            if (response.data.result) {
+                response.message = Message.dataFound.message;
+                response.resCode = Message.dataFound.code;
+            }
+            return response;
+        } catch (e) {
+            throw Response.createError(Message.dataFetchingError, e);
+        }
+    }
+    static async trackWasteHistory(cuser) {
+        const response = {
+            resCode: Message.noContent.code,
+            message: Message.noContent.message,
+            data: {
+            },
+        };
+
+        const sample = [
+            {
+              id: "1",
+              facility: "M/s. HMG Eco care Recycling",
+              product: "Sony 5 Disc CD Player - CDPCE375",
+              creditEarned: "1000",
+            },
+            {
+              id: "2",
+              facility: "GreenTech Recycling Solutions",
+              product: "Bose Acoustimass 5 Series III Speaker System - AM53BK",
+              creditEarned: "800",
+            },
+            {
+              id: "3",
+              facility: "Eco-Friendly Disposals",
+              product: "Sony Switcher - SBV40S",
+              creditEarned: "1200",
+            },
+            {
+              id: "4",
+              facility: "Sustainable Electronics Recycling",
+              product: "Panasonic Yeast Pro Automatic Breadmaker - SDYD250",
+              creditEarned: "600",
+            },
+            {
+              id: "5",
+              facility: "EarthSavers Recycling",
+              product: "Sony 300 Disc CD Changer - CDPCX355",
+              creditEarned: "900",
+            },
+          ]
+        try {
+
+            response.data = sample;
+            if (response.data.result) {
+                response.message = Message.dataFound.message;
+                response.resCode = Message.dataFound.code;
+            }
+            return response;
+        } catch (e) {
+            throw Response.createError(Message.dataFetchingError, e);
+        }
+    }
 
     static async saveProfile(data, cuser) {
         const response = { resCode: Message.profileUpdateError.code, message: Message.profileUpdateError.message };
@@ -137,7 +216,7 @@ class MasterService {
     }
 
     static async list(query = {}) {
-        const $extra = { page: query.page, limit: query.limit, isAll: query.isAll, total: query.total, getTotal: query.getTotal  };
+        const $extra = { page: query.page, limit: query.limit, isAll: query.isAll, total: query.total, getTotal: query.getTotal };
         let response = { data: [], extra: { ...$extra }, status: false };
 
         try {

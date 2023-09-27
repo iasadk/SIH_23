@@ -46,6 +46,22 @@ class controller {
 			Response.fail(res, e);
 		}
 	}
+	static async trackWasteOrder(req, res) {
+		try {
+			const srvRes = await service.trackWasteOrder(req.__cuser);
+			Response.success(res, srvRes);
+		} catch (e) {
+			Response.fail(res, e);
+		}
+	}
+	static async trackWasteHistory(req, res) {
+		try {
+			const srvRes = await service.trackWasteHistory(req.__cuser);
+			Response.success(res, srvRes);
+		} catch (e) {
+			Response.fail(res, e);
+		}
+	}
 	static async saveProfile(req, res) {
 		try {
 			const srvRes = await service.save(req.body);

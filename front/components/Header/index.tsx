@@ -43,7 +43,7 @@ const Header = () => {
       setOpenIndex(index);
     }
   };
-  
+
   return (
     <>
       <header
@@ -63,24 +63,28 @@ const Header = () => {
                 } `}
               >
                 <div className="flex items-cente">
-                <Image
-                  src="/images/logo/logo-marker.png"
-                  alt="logo"
-                  width={140}
-                  height={30}
-                  className="w-10 dark:hidden dark:text-white"
-                />
-                <h1 className="dark:hidden text-black ml-2 text-2xl font-bold">RECYCLICK</h1>
+                  <Image
+                    src="/images/logo/logo-marker.png"
+                    alt="logo"
+                    width={140}
+                    height={30}
+                    className="w-10 dark:hidden dark:text-white"
+                  />
+                  <h1 className="dark:hidden text-black ml-2 text-2xl font-bold">
+                    RECYCLICK
+                  </h1>
                 </div>
                 <div className="flex items-center">
-                <Image
-                  src="/images/logo/logo-marker.png"
-                  alt="logo"
-                  width={140}
-                  height={30}
-                  className="hidden w-10 dark:block"
-                />
-                <h1 className="hidden dark:block text-white ml-2 text-2xl font-bold">RECYCLICK</h1>
+                  <Image
+                    src="/images/logo/logo-marker.png"
+                    alt="logo"
+                    width={140}
+                    height={30}
+                    className="hidden w-10 dark:block"
+                  />
+                  <h1 className="hidden dark:block text-white ml-2 text-2xl font-bold">
+                    RECYCLICK
+                  </h1>
                 </div>
               </Link>
             </div>
@@ -201,11 +205,19 @@ const Header = () => {
                         <DropdownMenuItem>
                           <Link href={"/profile"}>Profile</Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>Billing</DropdownMenuItem>
-                        <DropdownMenuItem>Team</DropdownMenuItem>
                         <DropdownMenuItem>
-                          <span className="bg-red-600 py-1 px-2 font-medium text-center cursor-pointer w-full rounded-md" onClick={()=>util.logout()}>
-                          Logout
+                          <Link href={"/track-waste"}>Track Waste</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                        <Link href={"/dispose-waste"}>Disposed Waste</Link>
+
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <span
+                            className="bg-red-600 py-1 px-2 font-medium text-center cursor-pointer w-full rounded-md"
+                            onClick={() => util.logout()}
+                          >
+                            Logout
                           </span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>

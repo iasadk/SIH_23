@@ -40,6 +40,7 @@
     "react-dom": "18.2.0",
     "react-map-gl": "^7.1.6",
     "react-modal-video": "^2.0.0",
+    "react-step-progress-bar": "^1.0.3",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7"
   },
