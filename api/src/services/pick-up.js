@@ -14,11 +14,12 @@ class MasterService {
         const response = { status: false, resCode: Message.dataSaved.code, message: Message.dataSaved.message };
         try {
             const docData = data._id ? await model.findById(data._id) : new model();
+            console.log(data)
             if (data.status === "Credited" && docData.status !== "Credited") {
                 // then give the credit points to user:
                 const coinData = await creditPointModel.create({
-                    coins: docData.approxCredit,
-                    userId: docData.userId
+                    coins: data.approxCredit,
+                    userId: data.userId
                 })
                 console.log(coinData)
                 await coinData.save();

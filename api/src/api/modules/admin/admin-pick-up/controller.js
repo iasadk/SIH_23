@@ -24,7 +24,7 @@ class controller {
 	static async save(req, res) {
 		try {
 			const response = { data: [], message: Message.internalServerError.message, code: Message.internalServerError.code };
-			const srvRes = await service.save({ ...req.body, userId: req.__cuser._id });
+			const srvRes = await service.save({ ...req.body });
 			response.data = srvRes.data
 			response.message = Message.dataSaved.message;
 			response.code = Message.dataSaved.code;

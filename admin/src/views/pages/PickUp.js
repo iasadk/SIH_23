@@ -340,6 +340,7 @@ const UserDetailModal = forwardRef((props, ref) => {
         openForm(dt) {
             setOpen(true);
             setData({ ...dt });
+            console.log("-----",dt)
         }
     }));
 

@@ -70,7 +70,7 @@ const AboutPage = () => {
   }, []);
 
   // protecting page:
-  if (util.isLoggedIn()) {
+  if (!util.isLoggedIn()) {
     window.location.href = "/";
     return;
   }
